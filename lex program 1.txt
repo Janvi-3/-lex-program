@@ -1,0 +1,22 @@
+%{
+#include <iostream>
+using namespace std;
+%}
+
+%%
+
+[a-z]   { cout << (char)(yytext[0] - 'a' + 'A'); }  // convert lowercase to uppercase
+[A-Z]   { cout << yytext[0]; }                     // print uppercase as is
+.       { cout << yytext[0]; }                     // print other characters as is
+\n      { cout << endl; }
+
+%%
+
+int main() {
+    yylex();  // start scanning
+    return 0;
+}
+
+int yywrap() {
+    return 1;
+}
