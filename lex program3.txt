@@ -1,0 +1,28 @@
+%{
+#include <iostream>
+#include <string>
+using namespace std;
+
+void reverseAndPrint(const char* word) {
+    string str(word);
+    reverse(str.begin(), str.end());
+    cout << str;
+}
+%}
+
+%%
+
+[ \t\n]    { cout << yytext; }                 // print spaces and newlines as is
+[a-zA-Z0-9]+   { reverseAndPrint(yytext); }    // reverse and print each word
+.         { cout << yytext; }                  // print punctuation and others as is
+
+%%
+
+int main() {
+    yylex();
+    return 0;
+}
+
+int yywrap() {
+    return 1;
+}

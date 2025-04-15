@@ -1,0 +1,33 @@
+%{
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
+
+int binary_to_decimal(char *binary) {
+    int decimal = 0;
+    int len = strlen(binary);
+    for (int i = 0; i < len; i++) {
+        decimal = decimal * 2 + (binary[i] - '0');
+    }
+    return decimal;
+}
+%}
+
+%%
+[01]+ {
+    int decimal = binary_to_decimal(yytext);
+    printf("Binary: %s => Decimal: %d\n", yytext, decimal);
+}
+[^01\n]+     { /* Ignore non-binary characters */ }
+[\n]         { /* Newline - do nothing */ }
+%%
+
+int main() {
+    printf("Enter binary numbers (separated by space or newline):\n");
+    yylex();
+    return 0;
+}
+
+int yywrap() {
+    return 1;
+}

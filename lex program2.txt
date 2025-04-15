@@ -1,0 +1,32 @@
+%{
+#include <stdio.h>
+#include <string.h>
+
+char smallest[1000];  // to store the smallest word
+int first_word = 1;   // flag to indicate first word
+%}
+
+%%
+[a-zA-Z]+ {
+    if (first_word) {
+        strcpy(smallest, yytext);
+        first_word = 0;
+    } else {
+        if (strlen(yytext) < strlen(smallest)) {
+            strcpy(smallest, yytext);
+        }
+    }
+}
+.|\n   ; // Ignore everything else
+%%
+
+int main() {
+    printf("Enter text: ");
+    yylex();
+    printf("Smallest word: %s\n", smallest);
+    return 0;
+}
+
+int yywrap() {
+    return 1;
+}

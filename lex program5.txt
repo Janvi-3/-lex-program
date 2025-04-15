@@ -1,0 +1,65 @@
+%{
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX 100
+
+char stack[MAX];
+int top = -1;
+
+void push(char ch) {
+    stack[++top] = ch;
+}
+
+char pop() {
+    return stack[top--];
+}
+
+int precedence(char op) {
+    switch (op) {
+        case '+':
+        case '-': return 1;
+        case '*':
+        case '/': return 2;
+        default : return 0;
+    }
+}
+
+void handle_operator(char op) {
+    while (top != -1 && precedence(stack[top]) >= precedence(op)) {
+        printf("%c ", pop());
+    }
+    push(op);
+}
+%}
+
+%%
+[a-zA-Z]     { printf("%s ", yytext); }
+[+\-*/]      { handle_operator(yytext[0]); }
+\(           { push('('); }
+\)           {
+                while (top != -1 && stack[top] != '(') {
+                    printf("%c ", pop());
+                }
+                if (top != -1 && stack[top] == '(')
+                    pop();  // remove '('
+            }
+\n           {
+                while (top != -1) {
+                    printf("%c ", pop());
+                }
+                printf("\n");
+            }
+[ \t]        ;  // ignore spaces
+%%
+
+int main() {
+    printf("Enter infix expression (e.g., A+B*C):\n");
+    yylex();
+    return 0;
+}
+
+int yywrap() {
+    return 1;
+}
